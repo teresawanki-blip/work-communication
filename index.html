@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第十節：職場拆彈專家終極挑戰</title>
+    <style>
+        :root {
+            --primary-color: #2d6a4f;
+            --secondary-color: #52b788;
+            --bg-color: #f0f7f4;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --correct-bg: #d8f3dc;
+            --correct-border: #52b788;
+            --wrong-bg: #f8d7da;
+            --wrong-border: #dc3545;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .game-container {
+            background-color: var(--card-bg);
+            padding: 35px 25px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+            width: 100%;
+            max-width: 650px;
+            text-align: center;
+            border: 4px solid var(--primary-color);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .progress {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            font-size: 16px;
+        }
+
+        .question-box {
+            background-color: #f8f9fa;
+            padding: 22px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--text-color);
+            border-left: 8px solid var(--secondary-color);
+            text-align: left;
+            line-height: 1.5;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.03);
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .option-btn {
+            background-color: #ffffff;
+            border: 2px solid #ced4da;
+            padding: 18px 22px;
+            font-size: 19px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            font-weight: bold;
+            color: #444;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+        }
+
+        .option-btn:hover {
+            background-color: #f1f3f5;
+            border-color: #999;
+            transform: translateY(-2px);
+        }
+
+        .option-btn:active {
+            transform: translateY(1px);
+        }
+
+        .option-btn.correct {
+            background-color: var(--correct-bg);
+            border-color: var(--correct-border);
+            color: #1b4332;
+            position: relative;
+        }
+
+        .option-btn.correct::after {
+            content: "🟢 開車 (正確)";
+            float: right;
+            font-size: 16px;
+        }
+
+        .option-btn.wrong {
+            background-color: var(--wrong-bg);
+            border-color: var(--wrong-border);
+            color: #721c24;
+        }
+
+        .option-btn.wrong::after {
+            content: "🔴 撞車 (錯誤)";
+            float: right;
+            font-size: 16px;
+        }
+
+        .result-screen {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-title {
+            font-size: 32px;
+            color: #1b4332;
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+
+        .result-score {
+            font-size: 56px;
+            color: var(--secondary-color);
+            font-weight: 900;
+            margin-bottom: 25px;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.05);
+        }
+
+        .restart-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 18px 36px;
+            font-size: 20px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(45, 106, 79, 0.3);
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .restart-btn:hover {
+            background-color: #1b4332;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(45, 106, 79, 0.4);
+        }
+
+        /* 針對平板與手機的優化 */
+        @media (max-width: 480px) {
+            h1 { font-size: 22px; }
+            .question-box { font-size: 18px; padding: 16px; }
+            .option-btn { font-size: 16px; padding: 14px 18px; }
+            .option-btn.correct::after, .option-btn.wrong::after { font-size: 12px; float: none; display: block; margin-top: 5px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <div id="quiz-screen">
+        <h1>人際溝通技巧班（第十節）</h1>
+        <div class="subtitle">Ms Lam | 職場關係拆彈專家終極挑戰</div>
+        <div class="progress" id="progress-text">題目：1 / 5</div>
+        <div class="question-box" id="question-text">題目載入中...</div>
+        <div class="options-container" id="options-box"></div>
+    </div>
+
+    <div id="result-screen" class="result-screen">
+        <div class="result-title" id="result-status">挑戰成功！</div>
+        <div class="result-score" id="score-text">5 / 5 分</div>
+        <p id="feedback-text" style="font-size: 19px; color: #444; margin-bottom: 35px; line-height: 1.6; text-align: left; background: #f8f9fa; padding: 15px; border-radius: 12px;"></p>
+        <button class="restart-btn" onclick="startNewGame()">下一位同學：重新抽題挑戰</button>
+    </div>
+</div>
+
+<script>
+    // 內建 30 題完全扣緊 PPT 的精準題庫
+    const allQuestions = [
+        { q: "當你低頭苦幹，旁邊同事卻在偷懶玩手機，這屬於什麼衝突？", a: ["不公平", "誤會", "社交界線", "冷處理"], c: 0 },
+        { q: "上司說話時聲量太大、語氣太急，你因為胡亂猜測而做錯事，這屬於？", a: ["不公平", "誤會", "社交界線", "利益交換"], c: 1 },
+        { q: "同事未經同意，隨便拿走你桌上的訂書機，這屬於什麼衝突？", a: ["不公平", "誤會", "社交界線", "公事公辦"], c: 2 },
+        { q: "職場的本質是什麼？", a: ["尋找志同道合的死黨", "一起玩手機", "合作完成任務", "互相不理睬"], c: 2 },
+        { q: "與同事吵架，導致工作延誤，最後會被誰責備？", a: ["警察", "班主任", "老闆", "家人"], c: 2 },
+        { q: "在公司大吵大鬧、黑臉、逃避，會讓主管覺得你怎樣？", a: ["很有型", "不夠成熟、不專業", "很聰明", "很威風"], c: 1 },
+        { q: "與同事關係惡劣，讓自己充滿負面情緒，可能會產生什麼想法？", a: ["想加薪", "想升職", "想辭職", "想請客"], c: 2 },
+        { q: "主管或老闆的重要責任之一是什麼？", a: ["幫員工買外賣", "協調員工之間的衝突", "陪員工玩遊戲", "請員工放假"], c: 1 },
+        { q: "如果不喜歡現在的分工，應該用什麼方法來解決？", a: ["黑臉", "逃避", "交換", "辭職"], c: 2 },
+        { q: "職場衝突時，應不應該委屈自己去迎合他人？", a: ["應該", "不應該", "必須要", "無所謂"], c: 1 },
+        { q: "面對討厭的同事，在工作上說話時依然要保持什麼接觸？", a: ["身體接觸", "眼神接觸", "完全避開", "沒關係"], c: 1 },
+        { q: "面對討厭的同事，在工作上說話時要注意什麼？", a: ["注意聲量", "大吼大叫", "講悄悄話", "不出一聲"], c: 0 },
+        { q: "面對討厭的同事，在公事上應該採取什麼態度？", a: ["公事公辦", "黑臉對待", "已讀不回", "隨便敷衍"], c: 0 },
+        { q: "面對討厭的同事，在工作以外的時間，應該怎麼做？", a: ["一起吃午飯", "放學一起走", "不傳訊息、午飯時不聚在一起", "深夜長談"], c: 2 },
+        { q: "專業的『利益與交換』第一步是要做什麼？", a: ["大罵同事", "指出重點，說明分工唔太妥", "找老闆告狀", "自己一個人做完"], c: 1 },
+        { q: "專業的『利益與交換』第二步是提出什麼？", a: ["提出離職", "提出交換條件", "提出請客", "提出投訴"], c: 1 },
+        { q: "當分工不妥時，提出交換條件後，第三步要達成什麼？", a: ["爭吵", "共識並立刻開始工作", "各自放工", "不理對方"], c: 1 },
+        { q: "拆彈的『成熟、專業』方法能幫我們做到什麼？", a: ["把工作完成＋保護自己嘅界線", "委屈自己", "打敗同事", "不用上班"], c: 0 },
+        { q: "當你覺得『點解我要做埋你嗰份？』時，這屬於哪種心理？", a: ["覺得很好玩", "覺得不公平", "覺得很開心", "覺得沒所謂"], c: 1 },
+        { q: "上司對你發脾氣時，以下哪種是錯誤的猜測想法？", a: ["上司在針對我", "上司可能很急", "我們去問清楚細節", "保持冷靜"], c: 0 },
+        { q: "看見同事未經同意拿走文具，感到尷尬或生氣，但不懂得專業表達，通常會導致？", a: ["用極端方式回應（如大罵或已讀不回）", "同事道歉", "老闆加薪", "大家變成好朋友"], c: 0 },
+        { q: "在公司大吵大鬧、黑臉或逃避，屬於怎樣的行為？", a: ["成熟行為", "專業行為", "不夠成熟、不專業的行為", "好員工行為"], c: 2 },
+        { q: "以下哪一項是職場衝突帶來的影響？", a: ["影響團隊任務（無法交差）", "全公司一起放假", "人工會變多", "工作變輕鬆"], c: 0 },
+        { q: "如果不喜歡現在的分工，除了黑臉和逃避，更好的做法是？", a: ["尋求上司協助或進行利益交換", "直接放工回家", "假裝不知道", "偷偷哭泣"], c: 0 },
+        { q: "『你不一定要喜歡他，但你可以跟他交換工作，一起把事情完成。』這句話對嗎？", a: ["不對", "對的", "看情況", "不知道"], c: 1 },
+        { q: "面對討厭的同事，工作以外應該如何保持物理邊界？", a: ["保持距離，不討論私人生活", "天天追蹤他", "約他放假去玩", "每天傳訊息給他"], c: 0 },
+        { q: "上司說話時聲量太大，我們應該怎麼確認，避免胡亂猜測？", a: ["不理他", "運用觀察與提問確認細節", "跟上司大叫", "立刻辭職"], c: 1 },
+        { q: "當同事跟你說：『不如你負責搬重物，我負責填表。』這是在做什麼？", a: ["欺負你", "尋求上司協助", "提出交換條件", "對你發脾氣"], c: 2 },
+        { q: "如果與同事吵架，導致工作延誤，最後會怎樣？", a: ["可以早退", "被老闆責備", "得到稱讚", "沒有影響"], c: 1 },
+        { q: "恭喜來到最後一堂！這十節課我們最終學會了什麼相處之道？", a: ["互相尊重與專業協商", "事事計較", "逃避問題", "只和死黨說話"], c: 0 }
+    ];
+
+    let currentQuizQuestions = [];
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let lastRoundQuestionIndices = [];
+
+    function startNewGame() {
+        let availableIndices = [];
+        for (let i = 0; i < allQuestions.length; i++) {
+            if (!lastRoundQuestionIndices.includes(i)) {
+                availableIndices.push(i);
+            }
+        }
+
+        if (availableIndices.length < 5) {
+            availableIndices = [...Array(allQuestions.length).keys()];
+        }
+
+        let selectedIndices = [];
+        while (selectedIndices.length < 5) {
+            let randIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+            if (!selectedIndices.includes(randIndex)) {
+                selectedIndices.push(randIndex);
+            }
+        }
+
+        lastRoundQuestionIndices = [...selectedIndices];
+        currentQuizQuestions = selectedIndices.map(index => allQuestions[index]);
+        currentQuestionIndex = 0;
+        score = 0;
+
+        document.getElementById('result-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'block';
+        
+        showQuestion();
+    }
+
+    function showQuestion() {
+        let qData = currentQuizQuestions[currentQuestionIndex];
+        document.getElementById('progress-text').innerText = `題目：${currentQuestionIndex + 1} / 5`;
+        document.getElementById('question-text').innerText = qData.q;
+
+        let optionsBox = document.getElementById('options-box');
+        optionsBox.innerHTML = '';
+
+        qData.a.forEach((option, idx) => {
+            let btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = option;
+            btn.onclick = () => checkAnswer(idx, btn);
+            optionsBox.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selectedIndex, clickedBtn) {
+        let qData = currentQuizQuestions[currentQuestionIndex];
+        let buttons = document.getElementsByClassName('option-btn');
+
+        for (let btn of buttons) { btn.disabled = true; }
+
+        if (selectedIndex === qData.c) {
+            clickedBtn.classList.add('correct');
+            score++;
+        } else {
+            clickedBtn.classList.add('wrong');
+            buttons[qData.c].classList.add('correct');
+        }
+
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < 5) {
+                showQuestion();
+            } else {
+                showEndScreen();
+            }
+        }, 1500);
+    }
+
+    function showEndScreen() {
+        document.getElementById('quiz-screen').style.display = 'none';
+        document.getElementById('result-screen').style.display = 'block';
+
+        document.getElementById('score-text').innerText = `${score} / 5 分`;
+
+        let statusText = document.getElementById('result-status');
+        let feedbackText = document.getElementById('feedback-text');
+
+        if (score === 5) {
+            statusText.innerText = "🎉 終極拆彈成功！";
+            statusText.style.color = "#2d6a4f";
+            feedbackText.innerHTML = "<b>Ms Lam 評語：</b><br>太厲害了！你成功答對全部題目！你已經完全掌握『尋求協助、利益交換、冷處理』三大絕招。你是一名合格的『職場關係拆彈專家』，可以開開心心畢業去領取證書和大禮物啦！";
+        } else {
+            statusText.innerText = "👍 繼續努力！";
+            statusText.style.color = "#dc3545";
+            feedbackText.innerHTML = "<b>Ms Lam 評語：</b><br>做得很好！你有認真聽書。雖然差一點點滿分，但沒關係！可以請林老師或者旁邊的同學幫忙讀一讀，再重新挑戰一組新題目，你一定可以拿到滿分的！";
+        }
+    }
+
+    startNewGame();
+</script>
+
+</body>
+</html>
